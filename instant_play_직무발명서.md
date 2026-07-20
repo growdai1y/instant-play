@@ -5,8 +5,8 @@
     <td colspan="10" style="text-align:center; font-weight:bold;">직무발명(고안) 명세서<br>(Invention Disclosure)</td>
   </tr>
   <tr><td colspan="10">● 발명의 명칭 (Title of Invention)</td></tr>
-  <tr><td colspan="2">한글</td><td colspan="8">시청 권한 획득 조건 프로파일과 지연 취득 재생 정보를 이용하여 외부 VOD 콘텐츠를 앱 설치 없이 즉시 재생하는 시스템 및 방법</td></tr>
-  <tr><td colspan="2">영어</td><td colspan="8">App-less Instant Playback System and Method for External VOD Content Using Entitlement Acquisition Condition Profiles and Just-in-Time Playback Information</td></tr>
+  <tr><td colspan="2">한글</td><td colspan="8">외부 VOD 콘텐츠의 조건부 권한 획득 및 앱 설치 없는 즉시 재생을 위한 시스템 및 방법</td></tr>
+  <tr><td colspan="2">영어</td><td colspan="8">System and Method for Conditional Entitlement Acquisition and App-less Instant Playback of External VOD Content</td></tr>
   <tr><td colspan="10">● 관련 선행기술 및 선출원</td></tr>
   <tr><td rowspan="6">기술출처</td><td colspan="2" rowspan="2">유사특허/논문 등</td><td>명칭</td><td colspan="6">Advertisements as Keys for Streaming Protected Content, Service Provider Registration by a Content Broker, Content Metadata Directory Services 외 예비 선행특허</td></tr>
   <tr><td>특허/출원번호</td><td colspan="6">US8918902B1, US8065417B1, US9892206B2, US20150242597A1 — 정식 선행기술 조사 필요</td></tr>
