@@ -606,58 +606,107 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-    subgraph P["(100)즉시 재생 플랫폼"]
-        direction TB
-        R["(110)업체·콘텐츠 등록 관리부"]
-        V["(170)등록 재생 검증부"]
-        S[("등록 콘텐츠 정보<br/>조건·결과 프로파일<br/>검증된 재생구성집합")]
-        RR["(130)추천 콘텐츠 등록부"]
-        Q["선택 콘텐츠의<br/>사전 조건 조회"]
-        C["(140)조건 판정·결과 데이터 처리부"]
-        G["(160)권한 요청·응답 검증부"]
+    subgraph REGISTRATION["업체·콘텐츠 등록"]
+        direction LR
+        PROVIDER_REG["(200)외부 VOD 업체 시스템<br/><br/>업체 등록 처리<br/>업체 식별자·연계 정보 제공"]
+        CONTENT_REG["(200)외부 VOD 업체 시스템<br/><br/>콘텐츠 등록 처리<br/>콘텐츠·조건·결과 프로파일 제공"]
+        MANAGE["(100)즉시 재생 플랫폼<br/><br/>(110)업체·콘텐츠 등록 관리부<br/>등록 정보 검증·저장 요청"]
+        REG_STORE[("(100)즉시 재생 플랫폼<br/><br/>(190)저장소<br/>등록 정보·프로파일·버전 저장")]
 
-        R -->|"1) 콘텐츠·조건 등록"| S
-        R -->|"2) 실제 재생 검증 요청"| V
-        V -->|"3) 합격 결과 저장"| S
-        S -->|"4) 검증 완료 콘텐츠 활성화"| RR
-        S -->|"실행 검증 기준"| G
+        PROVIDER_REG -->|"[1-A] 업체 등록"| MANAGE
+        CONTENT_REG -->|"[1-B] 콘텐츠 등록"| MANAGE
+        MANAGE -->|"[2] 등록 정보 저장"| REG_STORE
     end
 
-    M["(400)추천 시스템"]
+    subgraph VERIFICATION["검증용 권한 취득"]
+        direction LR
+        VERIFY_INPUT[("(100)즉시 재생 플랫폼<br/><br/>(190)저장소<br/>등록 정보·후보 재생구성 조회")]
+        VERIFY_REQUEST["(100)즉시 재생 플랫폼<br/><br/>(170)등록 재생 검증부<br/>검증용 권한 요청"]
+        PROVIDE_TEST["(200)외부 VOD 업체 시스템<br/><br/>검증정보 제공 처리<br/>검증용 권한·시험 재생정보 제공"]
+        VERIFY_RUN["(100)즉시 재생 플랫폼<br/><br/>(170)등록 재생 검증부<br/>후보 재생구성 실제 시험"]
 
-    subgraph O["(200)외부 VOD 업체 시스템"]
-        direction TB
-        O1["조건 결과 확인"]
-        O2["업체 권한정책 적용"]
-        O3["수락·거절·처리상태 기록"]
-        O4["한시적 재생권한 발급"]
-        O1 -->|"14) 형식·버전 확인"| O2
-        O2 -->|"15) 권한 판단"| O3
-        O3 -->|"16) 수락 시 발급"| O4
+        VERIFY_INPUT -->|"[3] 검증 대상 조회"| VERIFY_REQUEST
+        VERIFY_REQUEST -->|"[4] 검증용 권한 요청"| PROVIDE_TEST
+        PROVIDE_TEST -->|"[5] 검증용 권한·시험 재생정보"| VERIFY_RUN
     end
 
-    subgraph D["(300)사용자 단말"]
-        direction TB
-        D0["추천 콘텐츠 표시"]
-        DS["사용자의<br/>추천 콘텐츠 선택"]
-        D1["선택 콘텐츠의 사전 조건 실행<br/><br/>(330)원천 결과 보고부"]
-        D2["(340)즉시 콘텐츠<br/>재생기"]
-        D0 -->|"7) 사용자 선택"| DS
+    subgraph ACTIVATION["실제 재생 검증·추천 활성화"]
+        direction LR
+        VERIFY_RESULT["(100)즉시 재생 플랫폼<br/><br/>(170)등록 재생 검증부<br/>실제 재생 시험 합격 결과"]
+        VERIFIED_STORE[("(100)즉시 재생 플랫폼<br/><br/>(190)저장소<br/>검증된 재생구성집합 저장")]
+        RECOMMEND_REG["(100)즉시 재생 플랫폼<br/><br/>(130)추천 콘텐츠 등록부<br/>검증 완료 콘텐츠 활성화"]
+        RECOMMEND_READY["(400)추천 시스템<br/><br/>즉시 재생 추천 대상 관리"]
+
+        VERIFY_RESULT -->|"[6] 합격 구성 저장"| VERIFIED_STORE
+        VERIFIED_STORE -->|"[7] 검증 완료 콘텐츠 활성화"| RECOMMEND_REG
+        RECOMMEND_REG -->|"[8] 추천 대상 등록"| RECOMMEND_READY
     end
 
-    RR -->|"5) 추천 대상 등록"| M
-    M -->|"6) 추천 목록 제공"| D0
-    DS -->|"8) 선택 콘텐츠 ID"| Q
-    S -->|"9) 해당 콘텐츠의 사전 조건"| Q
-    Q -->|"10) 사전 조건 안내"| D1
-    D1 -->|"11) 원천 결과 보고"| C
-    C -->|"12) 조건 결과 데이터"| G
-    G -->|"13) 권한 요청"| O1
-    O4 -->|"17) 권한·실행 구성·<br/>동적 재생정보"| G
-    G -->|"18) 일치 검증 후<br/>재생정보 전달"| D2
+    subgraph CONDITION["추천 선택·사전 조건 실행"]
+        direction LR
+        RECOMMEND["(400)추천 시스템<br/><br/>추천 목록 제공"]
+        SELECT["(300)사용자 단말<br/><br/>추천 콘텐츠 표시·선택"]
+        PRECONDITION["(100)즉시 재생 플랫폼<br/><br/>(140)조건 판정·결과 데이터 처리부<br/>선택 콘텐츠의 사전 조건 조회·안내"]
+        EXECUTE["(300)사용자 단말<br/><br/>(330)조건 실행·원천 결과 보고부<br/>사전 조건 실행"]
+
+        RECOMMEND -->|"[9] 추천 목록 제공"| SELECT
+        SELECT -->|"[10] 선택 콘텐츠 ID"| PRECONDITION
+        PRECONDITION -->|"[11] 사전 조건 안내"| EXECUTE
+    end
+
+    subgraph RESULT_REQUEST["조건 결과 생성·권한 요청 준비"]
+        direction LR
+        EXECUTION_RESULT["(300)사용자 단말<br/><br/>(330)조건 실행·원천 결과 보고부<br/>원천 결과 보고"]
+        RESULT["(100)즉시 재생 플랫폼<br/><br/>(140)조건 판정·결과 데이터 처리부<br/>충족 판정·조건 결과 생성"]
+        REQUEST_CREATE["(100)즉시 재생 플랫폼<br/><br/>(160)권한 요청·응답 검증부<br/>조건 결과·검증 구성으로 요청 생성"]
+
+        EXECUTION_RESULT -->|"[12] 원천 결과 보고"| RESULT
+        RESULT -->|"[13] 조건 결과·검증 구성 ID"| REQUEST_CREATE
+    end
+
+    subgraph AUTHORIZATION["업체 조건 결과·권한정책 판단"]
+        direction LR
+        REQUEST_SEND["(100)즉시 재생 플랫폼<br/><br/>(160)권한 요청·응답 검증부<br/>외부 VOD 업체로 권한 요청 전송"]
+        RESULT_CHECK["(200)외부 VOD 업체 시스템<br/><br/>(210)조건 결과 확인부<br/>형식·규칙·버전 확인"]
+        POLICY["(200)외부 VOD 업체 시스템<br/><br/>(220)업체 권한정책 판정부<br/>업체 고유 권한정책 판단"]
+        RECORD["(200)외부 VOD 업체 시스템<br/><br/>(230)기록부<br/>수락·거절·처리상태 기록"]
+
+        REQUEST_SEND -->|"[14] 권한 요청"| RESULT_CHECK
+        RESULT_CHECK -->|"[15] 결과 확인"| POLICY
+        POLICY -->|"[16] 권한 판단"| RECORD
+    end
+
+    subgraph ISSUANCE["권한 발급·업체 응답"]
+        direction LR
+        RECORD_RESULT["(200)외부 VOD 업체 시스템<br/><br/>(230)기록부<br/>수락·거절 결과 전달"]
+        ISSUE["(200)외부 VOD 업체 시스템<br/><br/>(240)재생권한 발급부<br/>한시적 권한·동적 재생정보 발급"]
+        RESPONSE_RECEIVE["(100)즉시 재생 플랫폼<br/><br/>(160)권한 요청·응답 검증부<br/>업체 응답 수신"]
+
+        RECORD_RESULT -->|"[17-A] 수락"| ISSUE
+        RECORD_RESULT -->|"[17-B] 거절 상태·사유"| RESPONSE_RECEIVE
+        ISSUE -->|"[18] 권한·실행 구성·동적 재생정보"| RESPONSE_RECEIVE
+    end
+
+    subgraph RESPONSE_VALIDATION["플랫폼 응답 검증·재생"]
+        direction LR
+        RESPONSE{"(100)즉시 재생 플랫폼<br/><br/>(160)권한 요청·응답 검증부<br/>업체 응답·실행 구성·버전 대조"}
+        PLAYER["(300)사용자 단말<br/><br/>(340)즉시 콘텐츠 재생기<br/>검증된 동적 재생정보로 재생"]
+        BLOCK["(100)즉시 재생 플랫폼<br/><br/>(160)권한 요청·응답 검증부<br/>동적 재생정보 전달 차단"]
+
+        RESPONSE -->|"[19-A] 검증 성공"| PLAYER
+        RESPONSE -->|"[19-B] 거절 또는 불일치"| BLOCK
+    end
+
+    REGISTRATION ~~~ VERIFICATION
+    VERIFICATION ~~~ ACTIVATION
+    ACTIVATION ~~~ CONDITION
+    CONDITION ~~~ RESULT_REQUEST
+    RESULT_REQUEST ~~~ AUTHORIZATION
+    AUTHORIZATION ~~~ ISSUANCE
+    ISSUANCE ~~~ RESPONSE_VALIDATION
 ```
 
-도 3은 등록·검증을 통과한 콘텐츠가 추천 콘텐츠 등록부(130)를 거쳐 추천 시스템(400)에 등록되고, 추천 시스템을 통해 사용자 단말에 추천되는 과정부터 나타낸다. 사용자가 추천된 콘텐츠를 선택하면 플랫폼은 선택 콘텐츠 식별자로 해당 콘텐츠에 등록된 사전 조건을 조회하여 단말에 안내한다. 단말은 그 이후에 해당 조건을 실행하고 원천 결과를 보고한다. 이어서 플랫폼이 조건 충족을 최종 판정하고, 업체가 결과 규칙과 고유 권한정책을 확인해 상태를 기록한 후 권한을 발급하며, 플랫폼이 실행 재생구성을 다시 확인한다.
+도 3은 복잡한 시스템 영역 간 왕복선을 없애고 전체 처리를 의미별 흐름 구간으로 나누어 나타낸다. 각 화살표는 시스템 영역이 아니라 실제 송신 처리 박스와 수신 처리 박스를 직접 연결한다. 외부 VOD 업체는 업체 등록과 콘텐츠 등록을 구분하여 업체·콘텐츠 등록 관리부(110)에 전달하고, 플랫폼은 등록 정보를 저장한 뒤 등록 재생 검증부(170)에서 실제 재생 시험을 수행한다. 검증 완료 콘텐츠만 추천 대상으로 등록된다. 이용 시에는 사용자 단말의 선택과 원천 결과가 조건 판정·결과 데이터 처리부(140)로 전달되고, 권한 요청·응답 검증부(160)가 외부 VOD 업체의 조건 결과 확인부(210)에 권한을 요청한다. 업체의 기록부(230)는 거절 상태와 사유를 직접 반환하거나, 수락 시 재생권한 발급부(240)로 처리를 넘긴다. 플랫폼은 업체 응답의 실행 구성과 버전을 검증한 후 재생정보를 사용자 단말의 즉시 콘텐츠 재생기(340)에 전달하거나 차단한다.
 
 #### 도 4. 등록 정보·검증 정보·동적 재생정보의 분리
 
