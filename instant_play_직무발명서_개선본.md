@@ -5,8 +5,8 @@
     <td colspan="10" style="text-align:center; font-weight:bold;">직무발명(고안) 명세서<br>(Invention Disclosure)</td>
   </tr>
   <tr><td colspan="10">● 발명의 명칭 (Title of Invention)</td></tr>
-  <tr><td colspan="2">한글</td><td colspan="8">외부 VOD 콘텐츠의 재생권한 획득 조건 처리 및 재생구성 검증 기반 즉시 재생 시스템 및 방법</td></tr>
-  <tr><td colspan="2">영어</td><td colspan="8">System and Method for Instant Playback of External VOD Content Based on Processing Playback Entitlement Acquisition Conditions and Verifying Playback Configurations</td></tr>
+  <tr><td colspan="2">한글</td><td colspan="8">조건부 재생권한 획득과 사전 검증된 재생 방식을 이용한 외부 VOD 콘텐츠 즉시 재생 시스템 및 방법</td></tr>
+  <tr><td colspan="2">영어</td><td colspan="8">System and Method for Instant Playback of External VOD Content Through Conditional Playback Entitlement Acquisition and Use of a Pre-Validated Playback Scheme</td></tr>
   <tr><td colspan="10">● 관련 선행기술 및 선출원</td></tr>
   <tr><td rowspan="6">기술출처</td><td colspan="2" rowspan="2">유사특허/논문 등</td><td>명칭</td><td colspan="6">Digital Rights Management in a Distributed Network, Pre-paid Links to Network Servers, Location Specific Temporary Authentication System, DRM Sharing and Playback Service Specification Selection 외</td></tr>
   <tr><td>특허/출원번호</td><td colspan="6">US7711647B2, EP0913789B1, US11805132B2, US12111891B2, EP3491562B1, US9081939B2 외 — 기준일 및 공식 권리상태를 포함한 정식 조사 필요</td></tr>
