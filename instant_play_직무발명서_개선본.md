@@ -184,15 +184,15 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-    PREG["외부 VOD 업체 시스템(200)<br/>업체·콘텐츠·조건·결과<br/>프로파일 등록 정보"]
-    MANAGE["즉시 재생 플랫폼(100)<br/><br/>(110)업체·콘텐츠 등록 관리부"]
-    VERIFY_REQUEST["즉시 재생 플랫폼(100)<br/>검증용 권한 요청<br/><br/>(170)등록 재생 검증부"]
-    PTEST["외부 VOD 업체 시스템(200)<br/>검증용 권한·시험 재생정보"]
-    VERIFY_RUN["즉시 재생 플랫폼(100)<br/>후보 구성별 실제 재생 시험<br/><br/>(170)등록 재생 검증부"]
-    REG_STORE[("저장소(190)<br/>등록 정보·버전")]
-    VERIFIED_STORE[("저장소(190)<br/>검증된 재생구성집합")]
-    RECREG["즉시 재생 플랫폼(100)<br/><br/>(130)추천 콘텐츠 등록부"]
-    RECOMMEND["추천 시스템(400)<br/>즉시 재생 추천 대상"]
+    PREG["(200)외부 VOD 업체 시스템<br/>업체·콘텐츠·조건·결과<br/>프로파일 등록 정보"]
+    MANAGE["(100)즉시 재생 플랫폼<br/><br/>(110)업체·콘텐츠 등록 관리부"]
+    VERIFY_REQUEST["(100)즉시 재생 플랫폼<br/>검증용 권한 요청<br/><br/>(170)등록 재생 검증부"]
+    PTEST["(200)외부 VOD 업체 시스템<br/>검증용 권한·시험 재생정보"]
+    VERIFY_RUN["(100)즉시 재생 플랫폼<br/>후보 구성별 실제 재생 시험<br/><br/>(170)등록 재생 검증부"]
+    REG_STORE[("(190)저장소<br/>등록 정보·버전")]
+    VERIFIED_STORE[("(190)저장소<br/>검증된 재생구성집합")]
+    RECREG["(100)즉시 재생 플랫폼<br/><br/>(130)추천 콘텐츠 등록부"]
+    RECOMMEND["(400)추천 시스템<br/>즉시 재생 추천 대상"]
 
     PREG -->|"1) 등록 정보 제공"| MANAGE
     MANAGE -->|"2-A) 등록 정보·버전 저장"| REG_STORE
@@ -212,7 +212,7 @@ flowchart TB
 flowchart TB
     SOURCE["조건 수행 결과 보고<br/>광고 완료·결제 승인·프로모션 적용<br/><br/>(330)조건 실행·원천 결과 보고부"]
 
-    subgraph PLATFORM_REQUEST["플랫폼 요청 단계(100)"]
+    subgraph PLATFORM_REQUEST["(100)플랫폼 요청 단계"]
         direction TB
         CONDITION["(140)조건 판정·결과 데이터 처리부"]
         REQUEST["권한 요청 생성·전송<br/><br/>(160)권한 요청·응답 검증부"]
@@ -222,7 +222,7 @@ flowchart TB
         CONDITION -->|"2-B) 조건 결과를<br/>거래에 최초 기록"| TX_INITIAL
     end
 
-    subgraph PROVIDER["VOD 업체 판단 단계(200)"]
+    subgraph PROVIDER["(200)VOD 업체 판단 단계"]
         direction TB
         RESULTCHECK["조건 결과의 형식·규칙·버전 확인<br/><br/>(210)조건 결과 확인부"]
         RIGHTSCHECK["업체 고유 권한정책 판단<br/><br/>(220)업체 권한정책 판정부"]
@@ -234,7 +234,7 @@ flowchart TB
         RECORD -->|"6-A) 수락"| ISSUE
     end
 
-    subgraph PLATFORM_RESPONSE["플랫폼 응답 단계(100)"]
+    subgraph PLATFORM_RESPONSE["(100)플랫폼 응답 단계"]
         direction TB
         RESPONSE["업체 응답 수신·검증<br/><br/>(160)권한 요청·응답 검증부"]
         TX_UPDATE[("같은 권한 거래 상태 갱신<br/><br/>(180)거래·처리상태 연계부")]
@@ -256,15 +256,15 @@ flowchart TB
 flowchart TB
     SOURCE330["1) 조건 수행 결과 수집·보고<br/>광고 완료·결제 승인·프로모션 적용<br/><br/>(330)조건 실행·원천 결과 보고부"]
     DECISION140["2) 콘텐츠별 조건 충족 판정<br/><br/>(140)조건 판정·결과 데이터 처리부"]
-    PROVIDER200["3) 업체가 요청을 수락한 경우<br/>한시적 권한·재생 방식·<br/>동적 재생정보 응답<br/>외부 VOD 업체 시스템(200)"]
+    PROVIDER200["3) 업체가 요청을 수락한 경우<br/>한시적 권한·재생 방식·<br/>동적 재생정보 응답<br/>(200)외부 VOD 업체 시스템"]
     CONFIG200["4) 업체가 이번에 보낸<br/>재생 방식과 버전"]
     VERIFIED170[("사전 시험 합격 목록<br/><br/>(170)등록 재생 검증부")]
     CHECK_VERIFIED{"5) 업체가 보낸 방식이<br/>사전 시험 합격 목록에 있는가?<br/><br/>(160)권한 요청·응답 검증부"}
-    CAPABILITY340["사용자 기기가 지원하는<br/>재생 방식<br/>즉시 콘텐츠 재생기(340)"]
+    CAPABILITY340["사용자 기기가 지원하는<br/>재생 방식<br/>(340)즉시 콘텐츠 재생기"]
     CHECK_DEVICE{"6) 사용자 기기에서<br/>실행 가능한가?<br/><br/>(160)권한 요청·응답 검증부"}
     DELIVER["동적 재생정보<br/>전달 허용"]
-    PLAYER340["동적 재생정보를 받은<br/>즉시 콘텐츠 재생기(340)"]
-    DRM["DRM 라이선스<br/>시스템(500)"]
+    PLAYER340["동적 재생정보를 받은<br/>(340)즉시 콘텐츠 재생기"]
+    DRM["(500)DRM 라이선스<br/>시스템"]
     PLAY["콘텐츠 재생 시작"]
     CONFIG_BLOCK["동적 재생정보 전달 차단<br/>등록 정보 갱신 또는 재검증<br/>추천 비활성"]
     DEVICE_BLOCK["해당 단말에서 재생 차단<br/>호환 구성 재선택·새 권한 요청<br/>또는 종료"]
@@ -1658,7 +1658,7 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-    subgraph P["즉시 재생 플랫폼(100)"]
+    subgraph P["(100)즉시 재생 플랫폼"]
         direction TB
         R["(110)업체·콘텐츠 등록 관리부"]
         V["(170)등록 재생 검증부"]
@@ -1675,9 +1675,9 @@ flowchart TB
         S -->|"실행 검증 기준"| G
     end
 
-    M["추천 시스템(400)"]
+    M["(400)추천 시스템"]
 
-    subgraph O["외부 VOD 업체 시스템(200)"]
+    subgraph O["(200)외부 VOD 업체 시스템"]
         direction TB
         O1["조건 결과 확인"]
         O2["업체 권한정책 적용"]
@@ -1688,12 +1688,12 @@ flowchart TB
         O3 -->|"16) 수락 시 발급"| O4
     end
 
-    subgraph D["사용자 단말(300)"]
+    subgraph D["(300)사용자 단말"]
         direction TB
         D0["추천 콘텐츠 표시"]
         DS["사용자의<br/>추천 콘텐츠 선택"]
         D1["선택 콘텐츠의 사전 조건 실행<br/><br/>(330)원천 결과 보고부"]
-        D2["즉시 콘텐츠<br/>재생기(340)"]
+        D2["(340)즉시 콘텐츠<br/>재생기"]
         D0 -->|"7) 사용자 선택"| DS
     end
 
