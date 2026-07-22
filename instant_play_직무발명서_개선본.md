@@ -254,14 +254,14 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-    SOURCE330["1) 조건 수행 결과 수집·보고<br/>광고 완료·결제 승인·프로모션 적용<br/><br/>(330)조건 실행·원천 결과 보고부"]
-    DECISION140["2) 콘텐츠별 조건 충족 판정<br/><br/>(140)조건 판정·결과 데이터 처리부"]
-    PROVIDER200["3) 업체가 요청을 수락한 경우<br/>한시적 권한·재생 방식·<br/>동적 재생정보 응답<br/>(200)외부 VOD 업체 시스템"]
-    CONFIG200["4) 업체가 이번에 보낸<br/>재생 방식과 버전"]
+    SOURCE330["조건 수행 결과 수집·보고<br/>광고 완료·결제 승인·프로모션 적용<br/><br/>(330)조건 실행·원천 결과 보고부"]
+    DECISION140["콘텐츠별 조건 충족 판정<br/><br/>(140)조건 판정·결과 데이터 처리부"]
+    PROVIDER200["업체가 요청을 수락한 경우<br/>한시적 권한·재생 방식·<br/>동적 재생정보 응답<br/>(200)외부 VOD 업체 시스템"]
+    CONFIG200["업체가 이번에 보낸<br/>재생 방식과 버전"]
     VERIFIED170[("사전 시험 합격 목록<br/><br/>(170)등록 재생 검증부")]
-    CHECK_VERIFIED{"5) 업체가 보낸 방식이<br/>사전 시험 합격 목록에 있는가?<br/><br/>(160)권한 요청·응답 검증부"}
+    CHECK_VERIFIED{"업체가 보낸 방식이<br/>사전 시험 합격 목록에 있는가?<br/><br/>(160)권한 요청·응답 검증부"}
     CAPABILITY340["사용자 기기가 지원하는<br/>재생 방식<br/>(340)즉시 콘텐츠 재생기"]
-    CHECK_DEVICE{"6) 사용자 기기에서<br/>실행 가능한가?<br/><br/>(160)권한 요청·응답 검증부"}
+    CHECK_DEVICE{"사용자 기기에서<br/>실행 가능한가?<br/><br/>(160)권한 요청·응답 검증부"}
     DELIVER["동적 재생정보<br/>전달 허용"]
     PLAYER340["동적 재생정보를 받은<br/>(340)즉시 콘텐츠 재생기"]
     DRM["(500)DRM 라이선스<br/>시스템"]
@@ -269,20 +269,20 @@ flowchart TB
     CONFIG_BLOCK["동적 재생정보 전달 차단<br/>등록 정보 갱신 또는 재검증<br/>추천 비활성"]
     DEVICE_BLOCK["해당 단말에서 재생 차단<br/>호환 구성 재선택·새 권한 요청<br/>또는 종료"]
 
-    SOURCE330 -->|"원천 결과 보고"| DECISION140
-    DECISION140 -->|"조건 충족 시 권한 요청"| PROVIDER200
-    PROVIDER200 -->|"수락 응답"| CONFIG200
-    CONFIG200 --> CHECK_VERIFIED
+    SOURCE330 -->|"1) 원천 결과 보고"| DECISION140
+    DECISION140 -->|"2) 조건 충족 시 권한 요청"| PROVIDER200
+    PROVIDER200 -->|"3) 수락 응답"| CONFIG200
+    CONFIG200 -->|"4) 재생 방식·버전 대조"| CHECK_VERIFIED
     VERIFIED170 -->|"합격 목록 제공"| CHECK_VERIFIED
     CHECK_VERIFIED -->|"5-A) 목록에 있음"| CHECK_DEVICE
     CHECK_VERIFIED -->|"5-B) 목록에 없음"| CONFIG_BLOCK
     CAPABILITY340 -->|"지원 범위 제공"| CHECK_DEVICE
     CHECK_DEVICE -->|"6-A) 실행 가능"| DELIVER
     CHECK_DEVICE -->|"6-B) 실행 불가"| DEVICE_BLOCK
-    DELIVER -->|"7-A) 검증된 정보 전달"| PLAYER340
-    PLAYER340 -->|"8-A1) DRM 미적용"| PLAY
-    PLAYER340 -->|"8-A2) 라이선스 요청"| DRM
-    DRM -->|"9-A2) 라이선스 반환"| PLAY
+    DELIVER -->|"7) 검증된 정보 전달"| PLAYER340
+    PLAYER340 -->|"8-A) DRM 미적용"| PLAY
+    PLAYER340 -->|"8-B) 라이선스 요청"| DRM
+    DRM -->|"9) 라이선스 반환"| PLAY
 ```
 
 이 구조도는 조건 수행부터 단말 재생까지의 연결을 한 흐름으로 보여 준다. 조건 실행·원천 결과 보고부(330)는 광고 완료·결제 승인·프로모션 적용과 같은 실제 수행 기록을 모아 보고할 뿐, 조건 충족 여부를 판단하지 않는다. 조건 판정·결과 데이터 처리부(140)가 콘텐츠별 기준으로 충족 여부를 판정하고, 업체가 요청을 수락한 경우에만 권한과 이번 세션의 동적 재생정보가 돌아온다.
