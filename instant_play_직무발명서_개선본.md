@@ -1654,6 +1654,123 @@ flowchart LR
 
 #### 도 3. 전체 시스템과 역할 경계
 
+##### 전체 구조도
+
+```mermaid
+flowchart TB
+    PROVIDER_REG["(200)외부 VOD 업체 시스템<br/><br/>업체·콘텐츠 등록 처리"]
+    REG_MANAGER["(100)즉시 재생 플랫폼<br/><br/>(110)업체·콘텐츠 등록 관리부"]
+    STORE[("(100)즉시 재생 플랫폼<br/><br/>(190)저장소")]
+    REG_VERIFY["(100)즉시 재생 플랫폼<br/><br/>(170)등록 재생 검증부"]
+    PROVIDER_TEST["(200)외부 VOD 업체 시스템<br/><br/>검증정보 제공 처리"]
+    RECOMMEND_MANAGER["(100)즉시 재생 플랫폼<br/><br/>(130)추천 콘텐츠 등록부"]
+    RECOMMEND_SYSTEM["(400)추천 시스템"]
+    TERMINAL_UI["(300)사용자 단말<br/><br/>추천 콘텐츠 표시·선택"]
+    CONDITION_PROCESSOR["(100)즉시 재생 플랫폼<br/><br/>(140)조건 판정·결과 데이터 처리부"]
+    TERMINAL_RESULT["(300)사용자 단말<br/><br/>(330)조건 실행·원천 결과 보고부"]
+    AUTH_PROCESSOR["(100)즉시 재생 플랫폼<br/><br/>(160)권한 요청·응답 검증부"]
+    RESULT_CHECK["(200)외부 VOD 업체 시스템<br/><br/>(210)조건 결과 확인부"]
+    POLICY["(200)외부 VOD 업체 시스템<br/><br/>(220)업체 권한정책 판정부"]
+    RECORD["(200)외부 VOD 업체 시스템<br/><br/>(230)기록부"]
+    ISSUE["(200)외부 VOD 업체 시스템<br/><br/>(240)재생권한 발급부"]
+    TRANSACTION_STORE[("(100)즉시 재생 플랫폼<br/><br/>(180)거래·처리상태 연계부")]
+    TERMINAL_PLAYER["(300)사용자 단말<br/><br/>(340)즉시 콘텐츠 재생기"]
+    DRM["(500)업체 연계 DRM<br/>라이선스 시스템"]
+
+    PROVIDER_REG -->|"[1]"| REG_MANAGER
+    REG_MANAGER -->|"[2]"| STORE
+    STORE -->|"[3]"| REG_VERIFY
+    REG_VERIFY -->|"[4]"| PROVIDER_TEST
+    PROVIDER_TEST -->|"[5]"| REG_VERIFY
+    REG_VERIFY -->|"[6]"| STORE
+    STORE -->|"[7]"| RECOMMEND_MANAGER
+    RECOMMEND_MANAGER -->|"[8]"| RECOMMEND_SYSTEM
+    RECOMMEND_SYSTEM -->|"[9]"| TERMINAL_UI
+    TERMINAL_UI -->|"[10]"| CONDITION_PROCESSOR
+    CONDITION_PROCESSOR -->|"[11]"| TERMINAL_RESULT
+    TERMINAL_RESULT -->|"[12]"| CONDITION_PROCESSOR
+    CONDITION_PROCESSOR -->|"[13-A]"| AUTH_PROCESSOR
+    CONDITION_PROCESSOR -->|"[13-B]"| TRANSACTION_STORE
+    AUTH_PROCESSOR -->|"[14]"| RESULT_CHECK
+    RESULT_CHECK -->|"[15]"| POLICY
+    POLICY -->|"[16]"| RECORD
+    RECORD -->|"[17-A]"| ISSUE
+    RECORD -->|"[17-B]"| AUTH_PROCESSOR
+    ISSUE -->|"[18]"| AUTH_PROCESSOR
+    AUTH_PROCESSOR -->|"[19-A]"| TRANSACTION_STORE
+    AUTH_PROCESSOR -->|"[19-B]"| TERMINAL_PLAYER
+    TERMINAL_PLAYER -.->|"[20]"| DRM
+
+    classDef platform fill:#eef3ff,stroke:#4f6fb3,color:#111;
+    classDef provider fill:#fff1df,stroke:#b7791f,color:#111;
+    classDef terminal fill:#eaf8ee,stroke:#3a8f5b,color:#111;
+    classDef external fill:#f3eaff,stroke:#7656a8,color:#111;
+    class REG_MANAGER,STORE,REG_VERIFY,RECOMMEND_MANAGER,CONDITION_PROCESSOR,AUTH_PROCESSOR,TRANSACTION_STORE platform;
+    class PROVIDER_REG,PROVIDER_TEST,RESULT_CHECK,POLICY,RECORD,ISSUE provider;
+    class TERMINAL_UI,TERMINAL_RESULT,TERMINAL_PLAYER terminal;
+    class RECOMMEND_SYSTEM,DRM external;
+```
+
+##### 시스템 영역별 구성도
+
+```mermaid
+flowchart LR
+    subgraph TERMINAL_AREA["(300)사용자 단말"]
+        direction TB
+        TERMINAL_UI_BOX["추천 콘텐츠 표시·선택"]
+        TERMINAL_RESULT_BOX["(330)조건 실행·원천 결과 보고부"]
+        TERMINAL_PLAYER_BOX["(340)즉시 콘텐츠 재생기"]
+
+        TERMINAL_UI_BOX ~~~ TERMINAL_RESULT_BOX ~~~ TERMINAL_PLAYER_BOX
+    end
+
+    subgraph PLATFORM_AREA["(100)즉시 재생 플랫폼"]
+        direction TB
+        PLATFORM_REG["(110)업체·콘텐츠 등록 관리부"]
+        PLATFORM_STORE[("(190)저장소")]
+        PLATFORM_VERIFY["(170)등록 재생 검증부"]
+        PLATFORM_RECOMMEND["(130)추천 콘텐츠 등록부"]
+        PLATFORM_CONDITION["(140)조건 판정·결과 데이터 처리부"]
+        PLATFORM_AUTH["(160)권한 요청·응답 검증부"]
+        PLATFORM_TRANSACTION[("(180)거래·처리상태 연계부")]
+
+        PLATFORM_REG ~~~ PLATFORM_STORE ~~~ PLATFORM_VERIFY ~~~ PLATFORM_RECOMMEND
+        PLATFORM_RECOMMEND ~~~ PLATFORM_CONDITION ~~~ PLATFORM_AUTH ~~~ PLATFORM_TRANSACTION
+    end
+
+    subgraph PROVIDER_AREA["(200)외부 VOD 업체 시스템"]
+        direction TB
+        PROVIDER_REG_BOX["업체·콘텐츠 등록 처리"]
+        PROVIDER_TEST_BOX["검증정보 제공 처리"]
+        PROVIDER_RESULT_BOX["(210)조건 결과 확인부"]
+        PROVIDER_POLICY_BOX["(220)업체 권한정책 판정부"]
+        PROVIDER_RECORD_BOX["(230)기록부"]
+        PROVIDER_ISSUE_BOX["(240)재생권한 발급부"]
+
+        PROVIDER_REG_BOX ~~~ PROVIDER_TEST_BOX ~~~ PROVIDER_RESULT_BOX
+        PROVIDER_RESULT_BOX ~~~ PROVIDER_POLICY_BOX ~~~ PROVIDER_RECORD_BOX ~~~ PROVIDER_ISSUE_BOX
+    end
+
+    TERMINAL_AREA <--> PLATFORM_AREA <--> PROVIDER_AREA
+
+    PLATFORM_REG --> PLATFORM_STORE
+    PLATFORM_STORE <--> PLATFORM_VERIFY
+    PLATFORM_STORE --> PLATFORM_RECOMMEND
+
+    PLATFORM_STORE --> PLATFORM_CONDITION
+    PLATFORM_CONDITION --> PLATFORM_AUTH
+    PLATFORM_STORE --> PLATFORM_AUTH
+
+    PROVIDER_RESULT_BOX --> PROVIDER_POLICY_BOX
+    PROVIDER_POLICY_BOX --> PROVIDER_RECORD_BOX
+    PROVIDER_RECORD_BOX --> PROVIDER_ISSUE_BOX
+
+    PLATFORM_CONDITION --> PLATFORM_TRANSACTION
+    PLATFORM_AUTH --> PLATFORM_TRANSACTION
+```
+
+##### 단계별 세부 흐름
+
 ```mermaid
 flowchart TB
     subgraph REGISTRATION["업체·콘텐츠 등록"]
@@ -1756,7 +1873,7 @@ flowchart TB
     ISSUANCE ~~~ RESPONSE_VALIDATION
 ```
 
-도 3은 복잡한 시스템 영역 간 왕복선을 없애고 전체 처리를 의미별 흐름 구간으로 나누어 나타낸다. 각 화살표는 시스템 영역이 아니라 실제 송신 처리 박스와 수신 처리 박스를 직접 연결한다. 외부 VOD 업체는 업체 등록과 콘텐츠 등록을 구분하여 업체·콘텐츠 등록 관리부(110)에 전달하고, 플랫폼은 등록 정보를 저장한 뒤 등록 재생 검증부(170)에서 실제 재생 시험을 수행한다. 검증 완료 콘텐츠만 추천 대상으로 등록된다. 이용 시에는 사용자 단말의 선택과 원천 결과가 조건 판정·결과 데이터 처리부(140)로 전달되고, 권한 요청·응답 검증부(160)가 외부 VOD 업체의 조건 결과 확인부(210)에 권한을 요청한다. 업체의 기록부(230)는 거절 상태와 사유를 직접 반환하거나, 수락 시 재생권한 발급부(240)로 처리를 넘긴다. 플랫폼은 업체 응답의 실행 구성과 버전을 검증한 후 재생정보를 사용자 단말의 즉시 콘텐츠 재생기(340)에 전달하거나 차단한다.
+도 3의 전체 구조도는 화살표 설명을 생략하고 모든 시스템과 실제 처리 구성부의 연결 관계 및 처리 시간 순서를 `[n]` 형식으로 한 화면에 나타낸다. 시스템 영역별 구성도는 사용자 단말(300), 즉시 재생 플랫폼(100) 및 외부 VOD 업체 시스템(200)의 경계와 각 영역에 포함되는 하위 구성부를 나타낸다. 단계별 세부 흐름은 같은 구조를 의미별 흐름 구간으로 나누어 처리 순서와 분기를 표시한다. 외부 VOD 업체는 업체 등록과 콘텐츠 등록을 구분하여 업체·콘텐츠 등록 관리부(110)에 전달하고, 플랫폼은 등록 정보를 저장한 뒤 등록 재생 검증부(170)에서 실제 재생 시험을 수행한다. 검증 완료 콘텐츠만 추천 대상으로 등록된다. 이용 시에는 사용자 단말의 선택과 원천 결과가 조건 판정·결과 데이터 처리부(140)로 전달되고, 권한 요청·응답 검증부(160)가 외부 VOD 업체의 조건 결과 확인부(210)에 권한을 요청한다. 업체의 기록부(230)는 거절 상태와 사유를 직접 반환하거나, 수락 시 재생권한 발급부(240)로 처리를 넘긴다. 플랫폼은 업체 응답의 실행 구성과 버전을 검증한 후 재생정보를 사용자 단말의 즉시 콘텐츠 재생기(340)에 전달하거나 차단한다.
 
 #### 도 4. 등록 정보·검증 정보·동적 재생정보의 분리
 
